@@ -138,7 +138,7 @@ class MyAuthProviderService extends AbstractAuthModuleProvider {
           return r.data
         })
 
-      console.log('Token Response:', response)
+      // console.log('Token Response:', response)
 
       const { authIdentity, success } = await this.verify_(
         response as TokenResponse,

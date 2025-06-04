@@ -128,31 +128,31 @@ export async function POST(
   const { name, member } = req.validatedBody
 
   // Use SellerModuleService to create seller and member
-  const service = req.scope.resolve('seller')
-  
-  // Create seller
-  const seller = await service.createSellers({
-    name,
-    handle: name.toLowerCase()
-      .replace(/\s+/g, '-')      // Replace spaces with -
-      .replace(/[^\w-]+/g, '')   // Remove all non-word chars
-      .replace(/--+/g, '-')      // Replace multiple - with single -
-      .replace(/^-+/, '')        // Trim - from start of text
-      .replace(/-+$/, '')        // Trim - from end of text
-  })
-  
-  // Create member associated with the seller
-  await service.createMembers({
-    name: member.name,
-    email: member.email,
-    seller_id: seller.id,
-    role: 'owner' // Set the role to owner for the initial member
-  })
-  
-  // Create seller onboarding
-  await service.createSellerOnboardings({
-    seller_id: seller.id
-  })
+  // const service:any = req.scope.resolve('seller')
+
+  // // Create seller
+  // const seller = await service.createSellers({
+  //   name,
+  //   handle: name.toLowerCase()
+  //     .replace(/\s+/g, '-')      // Replace spaces with -
+  //     .replace(/[^\w-]+/g, '')   // Remove all non-word chars
+  //     .replace(/--+/g, '-')      // Replace multiple - with single -
+  //     .replace(/^-+/, '')        // Trim - from start of text
+  //     .replace(/-+$/, '')        // Trim - from end of text
+  // })
+
+  // // Create member associated with the seller
+  // await service.createMembers({
+  //   name: member.name,
+  //   email: member.email,
+  //   seller_id: seller.id,
+  //   role: 'owner' // Set the role to owner for the initial member
+  // })
+
+  // // Create seller onboarding
+  // await service.createSellerOnboardings({
+  //   seller_id: seller.id
+  // })
 
   // Fetch the created seller with its member for consistent response
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
@@ -172,7 +172,8 @@ export async function POST(
       'members.role'
     ],
     filters: {
-      id: seller.id
+      // id: seller.id
+      id: ''
     }
   })
 

@@ -4,7 +4,7 @@ import { WorkflowResponse, createWorkflow } from '@medusajs/workflows-sdk'
 type SetAuthMetadataWorkflowInput = {
   authIdentityId: string
   actorType: string
-  value: string | number
+  value: string
 }
 
 export const setAuthMetadataWorkflow = createWorkflow(
@@ -13,7 +13,7 @@ export const setAuthMetadataWorkflow = createWorkflow(
     setAuthAppMetadataStep({
       authIdentityId: input.authIdentityId,
       actorType: input.actorType,
-      value: input.value
+      value: input?.value || ''
     })
 
     return new WorkflowResponse({

@@ -54504,6 +54504,44 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         format: "json",
         ...params,
       }),
+
+    /**
+     * @description Creates a new seller and associated member.
+     *
+     * @tags Admin
+     * @name AdminCreateSeller
+     * @summary Create a Seller
+     * @request POST:/admin/sellers
+     * @secure
+     */
+    adminCreateSeller: (
+      data: {
+        /** The name of the seller */
+        name: string;
+        member: {
+          /** The name of the member */
+          name: string;
+          /** The email of the member */
+          email: string;
+        };
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          /** A seller object with its properties */
+          seller?: VendorSeller;
+        },
+        any
+      >({
+        path: `/admin/sellers`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
   };
   auth = {
     /**

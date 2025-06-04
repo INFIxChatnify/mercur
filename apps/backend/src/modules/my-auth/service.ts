@@ -1,6 +1,7 @@
 import axios from 'axios'
 import crypto from 'crypto'
 
+import { container } from '@medusajs/framework'
 import {
   AuthIdentityProviderService,
   AuthenticationInput,
@@ -9,10 +10,19 @@ import {
 } from '@medusajs/framework/types'
 import {
   AbstractAuthModuleProvider,
-  MedusaError
+  MedusaError,
+  toHandle
 } from '@medusajs/framework/utils'
+import { transform } from '@medusajs/framework/workflows-sdk'
 
 import { OAUTH2_URL } from '../../lib/constants'
+import { setAuthMetadataWorkflow } from '../../workflows/auth/workflows'
+import { createSellerStep } from '../../workflows/seller/steps/create-seller'
+import { REQUESTS_MODULE } from '../requests'
+import RequestsModuleService from '../requests/service'
+import { SELLER_MODULE } from '../seller'
+import SellerModuleService from '../seller/service'
+import { CreateMemberDTO, MemberDTO, SellerDTO } from '../seller/types'
 
 type InjectedDependencies = {
   logger: Logger
@@ -138,13 +148,110 @@ class MyAuthProviderService extends AbstractAuthModuleProvider {
           return r.data
         })
 
-      // console.log('Token Response:', response)
-      // console.log('Token Response:', response)
-
       const { authIdentity, success } = await this.verify_(
         response as TokenResponse,
         authIdentityService
       )
+      console.log(
+        'Token Response:',
+        authIdentity.provider_identities[0].user_metadata
+      )
+      console.log('Auth Identity:', authIdentity)
+      if (!authIdentity.app_metadata) {
+        try {
+          const input = {
+            seller: {
+              name: authIdentity.provider_identities[0].user_metadata.name
+            },
+            member: {
+              name: authIdentity.provider_identities[0].user_metadata.name,
+              email: authIdentity.provider_identities[0].user_metadata.email,
+              role: 'owner'
+            },
+            auth_identity_id: authIdentity.id
+          }
+          // const priceService = container.resolve(Modules.PRICING)
+          const service = container.resolve<SellerModuleService>(SELLER_MODULE)
+
+          const seller: SellerDTO = await service.createSellers({
+            ...input.seller,
+            handle: toHandle(input.seller.name)
+          })
+
+          // const onboarding = await service.createSellerOnboardings({
+          //   seller_id: seller.id
+          // })
+
+          // // const seller = createSellerStep(input.seller)
+
+          // // const memberInput: CreateMemberDTO = transform(
+          // //   { seller, member: input.member },
+          // //   ({ member, seller }) => ({
+          // //     ...member,
+          // //     seller_id: seller.id
+          // //   })
+          // // )
+          // const services = container.resolve<SellerModuleService>(SELLER_MODULE)
+
+          // const member: MemberDTO = await services.createMembers({
+          //   ...input.member,
+          //   seller_id: seller.id
+          // })
+          // // console.log(memberInput)
+
+          // // Use the workflow to set auth metadata
+          // await setAuthMetadataWorkflow.run({
+          //   container,
+          //   input: {
+          //     authIdentityId: input.auth_identity_id,
+          //     actorType: 'seller',
+          //     value: member.id
+          //   }
+          // })
+
+          const servicesss =
+            container.resolve<RequestsModuleService>(REQUESTS_MODULE)
+
+          // const toCreate = Array.isArray(input) ? input : [input]
+
+          const requests = await servicesss.createRequests({
+            data: {
+              seller: {
+                name: authIdentity.provider_identities[0].user_metadata.name
+              },
+              member: input.member,
+              auth_identity_id:
+                authIdentity.provider_identities[0].auth_identity_id,
+              provider_identity_id:
+                authIdentity.provider_identities[0].entity_id
+            },
+            type: 'seller',
+            submitter_id: authIdentity.provider_identities[0].id
+          })
+
+          //  await createSellerCreationRequestWorkflow.run({
+          //     input: {
+          //       data: {
+          //         seller: sellerData,
+          //         member,
+          //         auth_identity_id: req.auth_context?.auth_identity_id,
+          //         provider_identity_id: identity.entity_id
+          //       },
+          //       type: 'seller',
+          //       submitter_id: identity.id
+          //     },
+          //     container: req.scope
+          //   })
+          // Use the workflow to create the seller and member
+          // const { result: seller } = await createSellerWorkflow.run({
+          //   // container: req.scope,
+
+          // })
+          console.log('Seller created:', seller)
+        } catch (error) {
+          console.log('Error creating seller in workflow:', error)
+        }
+      }
 
       return {
         success,

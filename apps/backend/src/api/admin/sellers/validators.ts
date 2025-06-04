@@ -7,3 +7,13 @@ export const AdminSellerParams = createFindParams({
   offset: 0,
   limit: 50
 })
+
+export const AdminCreateSellerSchema = z.object({
+  name: z.string(),
+  member: z.object({
+    name: z.string(),
+    email: z.string().email()
+  })
+})
+
+export type AdminCreateSellerType = z.infer<typeof AdminCreateSellerSchema>

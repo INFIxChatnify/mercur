@@ -1,7 +1,11 @@
-import { MiddlewareRoute, validateAndTransformQuery } from '@medusajs/framework'
+import {
+  MiddlewareRoute,
+  validateAndTransformBody,
+  validateAndTransformQuery
+} from '@medusajs/framework'
 
 import { adminSellerQueryConfig } from './query-config'
-import { AdminSellerParams } from './validators'
+import { AdminCreateSellerSchema, AdminSellerParams } from './validators'
 
 export const sellerMiddlewares: MiddlewareRoute[] = [
   {
@@ -10,5 +14,10 @@ export const sellerMiddlewares: MiddlewareRoute[] = [
     middlewares: [
       validateAndTransformQuery(AdminSellerParams, adminSellerQueryConfig.list)
     ]
+  },
+  {
+    method: ['POST'],
+    matcher: '/admin/sellers',
+    middlewares: [validateAndTransformBody(AdminCreateSellerSchema)]
   }
 ]

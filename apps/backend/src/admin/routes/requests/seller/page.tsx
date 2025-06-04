@@ -1,6 +1,6 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk";
-import { Container, Heading, Table, Text } from "@medusajs/ui";
-import { History } from "@medusajs/icons";
+import { Button, Container, Heading, Table, Text } from "@medusajs/ui";
+import { History, PlusMini } from "@medusajs/icons";
 import { useVendorRequests } from "../../../hooks/api/requests";
 import { formatDate } from "../../../lib/date";
 
@@ -10,6 +10,7 @@ import { FilterRequests, FilterState } from "../components/filter-requests";
 import { SellerRequestDetail } from "./seller-detail";
 import { AdminRequest } from "@mercurjs/http-client";
 import { RequestMenu } from "../components/request-menu";
+import { CreateSellerForm } from "./create-seller-form";
 
 const PAGE_SIZE = 20;
 
@@ -34,6 +35,8 @@ const SellerRequestsPage = () => {
     status: currentFilter !== "" ? currentFilter : undefined,
   });
 
+  const [createSellerOpen, setCreateSellerOpen] = useState(false);
+
   return (
     <Container>
       <div className="flex items-center justify-between px-6 py-4">
@@ -54,6 +57,20 @@ const SellerRequestsPage = () => {
             }}
           />
         </div>
+        {/* <div>
+          <Button
+            onClick={() => setCreateSellerOpen(true)}
+            variant="primary"
+          >
+            <PlusMini className="mr-2" />
+            Create seller
+          </Button>
+          <CreateSellerForm
+            open={createSellerOpen}
+            onClose={() => setCreateSellerOpen(false)}
+            onSuccess={() => refetch()}
+          />
+        </div> */}
       </div>
       <div className="flex size-full flex-col overflow-hidden">
         {isLoading && <Text>Loading...</Text>}

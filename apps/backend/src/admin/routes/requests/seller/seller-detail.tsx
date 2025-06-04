@@ -61,6 +61,18 @@ export function SellerRequestDetail({ request, open, close }: Props) {
               <Text>{requestData.provider_identity_id}</Text>
             </Container>
           </fieldset>
+          <fieldset className="mt-2">
+            <legend className="mb-2">Phone</legend>
+            <Container>
+              <Text>{requestData.member?.phone || "-"}</Text>
+            </Container>
+          </fieldset>
+          <fieldset className="mt-2">
+            <legend className="mb-2">Wallet Address</legend>
+            <Container>
+              <Text>{requestData.metadata?.wallet?.address || "-"}</Text>
+            </Container>
+          </fieldset>
           <Container className="mt-4">
             <div className="flex items-center gap-2">
               <InformationCircle />

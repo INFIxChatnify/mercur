@@ -62,6 +62,8 @@ const SellerRequestsPage = () => {
             <Table.Row>
               <Table.HeaderCell>Name</Table.HeaderCell>
               <Table.HeaderCell>Email</Table.HeaderCell>
+              <Table.HeaderCell>Phone</Table.HeaderCell>
+              <Table.HeaderCell>Wallet Address</Table.HeaderCell>
               <Table.HeaderCell>Date</Table.HeaderCell>
               <Table.HeaderCell>Status</Table.HeaderCell>
               <Table.HeaderCell>Actions</Table.HeaderCell>
@@ -74,6 +76,8 @@ const SellerRequestsPage = () => {
                 <Table.Row key={request.id}>
                   <Table.Cell>{requestData.seller.name}</Table.Cell>
                   <Table.Cell>{requestData.provider_identity_id}</Table.Cell>
+                  <Table.Cell>{requestData.member?.phone || "-"}</Table.Cell>
+                  <Table.Cell>{requestData.metadata?.wallet?.address || "-"}</Table.Cell>
                   <Table.Cell>
                     <div className="flex items-center gap-2">
                       <History />

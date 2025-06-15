@@ -20,6 +20,7 @@ import { vendorProductCategoriesMiddlewares } from './product-categories/middlew
 import { vendorProductCollectionsMiddlewares } from './product-collections/middlewares'
 import { vendorProductTagsMiddlewares } from './product-tags/middlewares'
 import { vendorProductTypesMiddlewares } from './product-types/middlewares'
+import { vendorDigitalProductsMiddlewares } from './products-digital/middlewares'
 import { vendorProductsMiddlewares } from './products/middlewares'
 import { vendorPromotionsMiddlewares } from './promotions/middlewares'
 import { vendorRegionsMiddlewares } from './regions/middlewares'
@@ -96,6 +97,7 @@ export const vendorMiddlewares: MiddlewareRoute[] = [
   ...vendorStoresMiddlewares,
   ...vendorProductTagsMiddlewares,
   ...vendorProductTypesMiddlewares,
+  ...vendorDigitalProductsMiddlewares,
   ...vendorProductCategoriesMiddlewares,
   ...vendorProductCollectionsMiddlewares,
   ...vendorUploadMiddlewares,

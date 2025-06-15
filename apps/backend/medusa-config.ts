@@ -69,6 +69,56 @@ module.exports = defineConfig({
         appId: process.env.ALGOLIA_APP_ID
       }
     },
+    // {
+    //   resolve: '@rokmohar/medusa-plugin-meilisearch',
+    //   options: {
+    //     config: {
+    //       host: process.env.MEILISEARCH_HOST ?? '',
+    //       apiKey: process.env.MEILISEARCH_API_KEY ?? ''
+    //     },
+    //     settings: {
+    //       // The key is used as the index name in Meilisearch
+    //       products: {
+    //         // Required: Index type
+    //         type: 'products',
+    //         // Optional: Whether the index is enabled. When disabled:
+    //         // - Index won't be created or updated
+    //         // - Documents won't be added or removed
+    //         // - Index won't be included in searches
+    //         // - All operations will be silently skipped
+    //         enabled: true,
+    //         // Optional: Specify which fields to include in the index
+    //         // If not specified, all fields will be included
+    //         fields: [
+    //           'id',
+    //           'title',
+    //           'description',
+    //           'handle',
+    //           'variant_sku',
+    //           'thumbnail'
+    //         ],
+    //         indexSettings: {
+    //           searchableAttributes: ['title', 'description', 'variant_sku'],
+    //           displayedAttributes: [
+    //             'id',
+    //             'handle',
+    //             'title',
+    //             'description',
+    //             'variant_sku',
+    //             'thumbnail'
+    //           ],
+    //           filterableAttributes: ['id', 'handle']
+    //         },
+    //         primaryKey: 'id'
+    //         // Create your own transformer
+    //         /*transformer: (product) => ({
+    //           id: product.id,
+    //           // other attributes...
+    //         }),*/
+    //       }
+    //     }
+    //   }
+    // },
     {
       resolve: '@medusajs/medusa/payment',
       options: {

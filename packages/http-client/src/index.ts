@@ -14704,6 +14704,12 @@ export interface Order {
    * Whether the order is a draft order.
    */
   is_draft_order?: boolean;
+  /**
+   * deleted_at
+   * The date the order was deleted.
+   * @format date-time
+   */
+  deleted_at?: string;
 }
 
 /** The address's details. */
@@ -29188,8 +29194,6 @@ export interface Wishlist {
   }[];
 }
 
-import qs from "qs";
-
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
@@ -29273,7 +29277,10 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected toQueryString(rawQuery?: QueryParamsType): string {
     const query = rawQuery || {};
-    return qs.stringify(query);
+    const keys = Object.keys(query).filter((key) => "undefined" !== typeof query[key]);
+    return keys
+      .map((key) => (Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key)))
+      .join("&");
   }
 
   protected addQueryParams(rawQuery?: QueryParamsType): string {
@@ -36875,6 +36882,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         secure: true,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Delete a draft order.
+     *
+     * @tags Admin Draft Orders
+     * @name AdminDeleteDraftOrdersId
+     * @summary Delete a Draft Order
+     * @request DELETE:/admin/draft-orders/{id}
+     * @secure
+     */
+    adminDeleteDraftOrdersId: (id: string, params: RequestParams = {}) =>
+      this.request<void, Error | string>({
+        path: `/admin/draft-orders/${id}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
 
@@ -61138,6 +61162,74 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         any
       >({
         path: `/vendor/products`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Retrieves a list of digital products for the authenticated vendor.
+     *
+     * @tags Product
+     * @name VendorListDigitalProducts
+     * @summary List Digital Products
+     * @request GET:/vendor/products-digital
+     * @secure
+     */
+    vendorListDigitalProducts: (
+      query?: {
+        /** The number of items to skip before starting to collect the result set. */
+        offset?: number;
+        /** The number of items to return. */
+        limit?: number;
+        /** Comma-separated fields to include in the response. */
+        fields?: string;
+        /** The order of the returned items. */
+        order?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          products?: VendorProduct[];
+          /** The total number of items available */
+          count?: number;
+          /** The number of items skipped before these items */
+          offset?: number;
+          /** The number of items per page */
+          limit?: number;
+        },
+        any
+      >({
+        path: `/vendor/products-digital`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Creates a new digital product for the authenticated vendor. This endpoint creates both a product request and the associated digital product entity.
+     *
+     * @tags Product
+     * @name VendorCreateDigitalProduct
+     * @summary Create a Digital Product
+     * @request POST:/vendor/products-digital
+     * @secure
+     */
+    vendorCreateDigitalProduct: (data: VendorCreateProduct, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** A product object with its properties */
+          product?: VendorProduct;
+        },
+        any
+      >({
+        path: `/vendor/products-digital`,
         method: "POST",
         body: data,
         secure: true,

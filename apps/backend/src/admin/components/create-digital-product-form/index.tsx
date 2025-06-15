@@ -59,53 +59,53 @@ const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
     // TODO create digital product
     fetch(`/admin/digital-products`, {
-  method: "POST",
-  credentials: "include",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    name,
-    medias: mediaData,
-    product: {
-      title: productTitle,
-      options: [{
-        title: "Default",
-        values: ["default"],
-      }],
-      variants: [{
-        title: productTitle,
-        options: {
-          Default: "default",
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        medias: mediaData,
+        product: {
+          title: productTitle,
+          options: [{
+            title: "Default",
+            values: ["default"],
+          }],
+          variants: [{
+            title: productTitle,
+            options: {
+              Default: "default",
+            },
+            manage_inventory: false,
+            // delegate setting the prices to the
+            // product's page.
+            prices: [],
+          }],
         },
-        manage_inventory: false,
-        // delegate setting the prices to the
-        // product's page.
-        prices: [],
-      }],
-    },
-  }),
-})
-.then((res) => res.json())
-.then(({ message }) => {
-  if (message) {
-    throw message
-  }
-  onSuccess?.()
-})
-.catch((e) => {
-  console.error(e)
-  toast.error("Error", {
-    description: `An error occurred while creating the digital product: ${e}`,
-  })
-})
-.finally(() => setLoading(false))
+      }),
+    })
+    .then((res) => res.json())
+    .then(({ message }) => {
+      if (message) {
+        throw message
+      }
+      onSuccess?.()
+    })
+    .catch((e) => {
+      console.error(e)
+      toast.error("Error", {
+        description: `An error occurred while creating the digital product: ${e}`,
+      })
+    })
+    .finally(() => setLoading(false))
 
-  } catch (e) {
-    console.error(e)
-    setLoading(false)
-  }
-}
+      } catch (e) {
+        console.error(e)
+        setLoading(false)
+      }
+    }
 
     const onAddMedia = () => {
         setMedias((prev) => [

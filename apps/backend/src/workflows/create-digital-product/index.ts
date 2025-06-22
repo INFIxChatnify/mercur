@@ -11,6 +11,7 @@ import {
 } from '@medusajs/medusa/core-flows'
 
 import { DIGITAL_PRODUCT_MODULE } from '../../modules/digital-product'
+import { SELLER_MODULE } from '../../modules/seller'
 import createDigitalProductStep, {
   CreateDigitalProductStepInput
 } from './steps/create-digital-product'
@@ -53,6 +54,12 @@ const createDigitalProductWorkflow = createWorkflow(
       )
     )
 
+    // Create link between seller and product
+    const sellerId = transform(
+      { metadata: input.product.metadata },
+      (data) => data.metadata?.seller_id
+    )
+
     createRemoteLinkStep([
       {
         [DIGITAL_PRODUCT_MODULE]: {
@@ -60,6 +67,14 @@ const createDigitalProductWorkflow = createWorkflow(
         },
         [Modules.PRODUCT]: {
           product_variant_id: product[0].variants[0].id
+        }
+      },
+      {
+        [SELLER_MODULE]: {
+          seller_id: sellerId
+        },
+        [Modules.PRODUCT]: {
+          product_id: product[0].id
         }
       }
     ])

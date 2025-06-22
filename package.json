@@ -19,5 +19,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server-postgres": "^0.6.2"
   }
 }

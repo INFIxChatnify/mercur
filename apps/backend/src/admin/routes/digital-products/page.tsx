@@ -3,7 +3,7 @@ import { PhotoSolid } from "@medusajs/icons"
 import { Container, Heading, Table,Button } from "@medusajs/ui"
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { DigitalProduct } from "../../types"
+import { DigitalProduct, MediaType } from "../../types"
 import { useMemo,useEffect } from "react"
 import { Drawer } from "@medusajs/ui"
 import CreateDigitalProductForm from "../../components/create-digital-product-form"
@@ -74,23 +74,57 @@ const [currentPage, setCurrentPage] = useState(0)
       <Table>
         <Table.Header>
           <Table.Row>
+            <Table.HeaderCell>Preview</Table.HeaderCell>
             <Table.HeaderCell>Name</Table.HeaderCell>
+            <Table.HeaderCell>Media Files</Table.HeaderCell>
             <Table.HeaderCell>Action</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {digitalProducts.map((digitalProduct) => (
-            <Table.Row key={digitalProduct.id}>
-              <Table.Cell>
-                {digitalProduct.name}
-              </Table.Cell>
-              <Table.Cell>
-                <Link to={`/products/${digitalProduct.product_variant?.product_id}`}>
-                  View Product
-                </Link>
-              </Table.Cell>
-            </Table.Row>
-          ))}
+          {digitalProducts.map((digitalProduct) => {
+            const previewMedia = digitalProduct.medias?.find(
+              (media) => media.type === MediaType.PREVIEW
+            )
+            const mainMediaCount = digitalProduct.medias?.filter(
+              (media) => media.type === MediaType.MAIN
+            ).length || 0
+            const previewCount = digitalProduct.medias?.filter(
+              (media) => media.type === MediaType.PREVIEW
+            ).length || 0
+            
+            return (
+              <Table.Row key={digitalProduct.id}>
+                <Table.Cell>
+                  {previewMedia && (
+                    <img
+                      src={`${previewMedia.fileId}`}
+                      alt={digitalProduct.name}
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                  )}
+                  {!previewMedia && (
+                    <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
+                      <PhotoSolid className="w-8 h-8 text-gray-400" />
+                    </div>
+                  )}
+                </Table.Cell>
+                <Table.Cell>
+                  {digitalProduct.name}
+                </Table.Cell>
+                <Table.Cell>
+                  <div className="text-sm">
+                    <div>Main: {mainMediaCount}</div>
+                    <div>Preview: {previewCount}</div>
+                  </div>
+                </Table.Cell>
+                <Table.Cell>
+                  <Link to={`/products/${digitalProduct.product_variant?.product_id}`}>
+                    View Product
+                  </Link>
+                </Table.Cell>
+              </Table.Row>
+            )
+          })}
         </Table.Body>
       </Table>
       {/* TODO add pagination component */}

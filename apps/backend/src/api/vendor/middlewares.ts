@@ -6,6 +6,7 @@ import { vendorCampaignsMiddlewares } from './campaigns/middlewares'
 import { vendorCors } from './cors'
 import { vendorCustomerGroupsMiddlewares } from './customer-groups/middlewares'
 import { vendorCustomersMiddlewares } from './customers/middlewares'
+import { vendorNewDigitalProductsMiddlewares } from './digital-products/middlewares'
 import { vendorFulfillmentProvidersMiddlewares } from './fulfillment-providers/middlewares'
 import { vendorFulfillmentSetsMiddlewares } from './fulfillment-sets/middlewares'
 import { vendorInventoryItemsMiddlewares } from './inventory-items/middlewares'
@@ -20,7 +21,6 @@ import { vendorProductCategoriesMiddlewares } from './product-categories/middlew
 import { vendorProductCollectionsMiddlewares } from './product-collections/middlewares'
 import { vendorProductTagsMiddlewares } from './product-tags/middlewares'
 import { vendorProductTypesMiddlewares } from './product-types/middlewares'
-import { vendorDigitalProductsMiddlewares } from './products-digital/middlewares'
 import { vendorProductsMiddlewares } from './products/middlewares'
 import { vendorPromotionsMiddlewares } from './promotions/middlewares'
 import { vendorRegionsMiddlewares } from './regions/middlewares'
@@ -97,7 +97,7 @@ export const vendorMiddlewares: MiddlewareRoute[] = [
   ...vendorStoresMiddlewares,
   ...vendorProductTagsMiddlewares,
   ...vendorProductTypesMiddlewares,
-  ...vendorDigitalProductsMiddlewares,
+  ...vendorNewDigitalProductsMiddlewares,
   ...vendorProductCategoriesMiddlewares,
   ...vendorProductCollectionsMiddlewares,
   ...vendorUploadMiddlewares,

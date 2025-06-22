@@ -181,11 +181,9 @@ export const POST = async (
   res: MedusaResponse
 ) => {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
+  const requestId = Math.random().toString(36).substring(7)
 
   try {
-    // Debug logging
-    console.log('Request body received:', JSON.stringify(req.body, null, 2))
-    console.log('Validated body:', JSON.stringify(req.validatedBody, null, 2))
 
     // Get the seller for the authenticated vendor
     const seller = await fetchSellerByAuthActorId(
@@ -254,7 +252,16 @@ export const POST = async (
       digital_product: result.digital_product
     })
   } catch (error) {
-    console.error('Error creating vendor digital product:', error)
+    console.error(`[${requestId}] Error creating vendor digital product:`, error)
+    
+    // Handle duplicate key errors more gracefully
+    if (error instanceof Error && error.message.includes('already exists')) {
+      return res.status(409).json({
+        message: 'Digital product with the same media files already exists',
+        error: 'Duplicate media files detected. Please use different files or update the existing product.'
+      })
+    }
+    
     return res.status(500).json({
       message: 'Failed to create digital product',
       error: error instanceof Error ? error.message : 'Unknown error'

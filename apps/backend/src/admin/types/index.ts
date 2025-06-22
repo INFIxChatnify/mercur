@@ -11,6 +11,7 @@ export type DigitalProductMedia = {
   fileId: string
   mimeType: string
   digitalProducts?: DigitalProduct
+  url?: string
 }
 
 export type DigitalProduct = {

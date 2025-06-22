@@ -4,7 +4,7 @@ import {
   AuthenticatedMedusaRequest,
   MedusaResponse
 } from '@medusajs/framework/http'
-import { ContainerRegistrationKeys } from '@medusajs/framework/utils'
+import { ContainerRegistrationKeys, Modules } from '@medusajs/framework/utils'
 
 import createDigitalProductWorkflow from '../../../workflows/create-digital-product'
 import { CreateDigitalProductMediaInput } from '../../../workflows/create-digital-product/steps/create-digital-product-medias'
@@ -16,6 +16,7 @@ export const GET = async (
 ) => {
   const { fields, limit = 20, offset = 0 } = req.validatedQuery || {}
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
+  const fileModuleService = req.scope.resolve(Modules.FILE)
 
   const { data: digitalProducts, metadata: { count, take, skip } = {} } =
     await query.graph({
@@ -27,8 +28,35 @@ export const GET = async (
       }
     })
 
+  // Enhance media objects with file URLs
+  const enhancedDigitalProducts = await Promise.all(
+    digitalProducts.map(async (product) => {
+      if (product.medias && product.medias.length > 0) {
+        const enhancedMedias = await Promise.all(
+          product.medias.map(async (media) => {
+            try {
+              const fileData = await fileModuleService.retrieveFile(media.fileId)
+              return {
+                ...media,
+                url: fileData.url
+              }
+            } catch (error) {
+              console.error(`Failed to retrieve file ${media.fileId}:`, error)
+              return media
+            }
+          })
+        )
+        return {
+          ...product,
+          medias: enhancedMedias
+        }
+      }
+      return product
+    })
+  )
+
   res.json({
-    digital_products: digitalProducts,
+    digital_products: enhancedDigitalProducts,
     count,
     limit: take,
     offset: skip

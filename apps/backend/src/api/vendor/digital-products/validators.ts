@@ -71,36 +71,4 @@ export type GetVendorDigitalProductsType = z.infer<
   typeof getVendorDigitalProductsSchema
 >
 
-// Add debug test for schema
-const testBody = {
-  name: 'fgfhvnbvbn',
-  medias: [
-    {
-      type: 'PREVIEW',
-      file_id: 'Group 105-01JXT87SA0P3E8HQMG8E65S2EV.png',
-      mime_type: 'image/png'
-    }
-  ],
-  product: {
-    title: 'dfgfhfgh',
-    description: '',
-    variants: [
-      {
-        title: 'Default Variant',
-        prices: [
-          {
-            currency_code: 'usd',
-            amount: 0
-          }
-        ]
-      }
-    ]
-  }
-}
-
-try {
-  const result = createVendorDigitalProductsSchema.parse(testBody)
-  console.log('Schema validation test passed:', result)
-} catch (error) {
-  console.log('Schema validation test failed:', error)
-}
+// Debug test removed - was causing console output on every request

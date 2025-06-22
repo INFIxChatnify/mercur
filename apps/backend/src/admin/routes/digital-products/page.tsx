@@ -82,31 +82,33 @@ const [currentPage, setCurrentPage] = useState(0)
         </Table.Header>
         <Table.Body>
           {digitalProducts.map((digitalProduct) => {
-            const previewMedia = digitalProduct.medias?.find(
+            const previewMedias = digitalProduct.medias?.filter(
               (media) => media.type === MediaType.PREVIEW
-            )
+            ) || []
             const mainMediaCount = digitalProduct.medias?.filter(
               (media) => media.type === MediaType.MAIN
             ).length || 0
-            const previewCount = digitalProduct.medias?.filter(
-              (media) => media.type === MediaType.PREVIEW
-            ).length || 0
+            const previewCount = previewMedias.length
             
             return (
               <Table.Row key={digitalProduct.id}>
                 <Table.Cell>
-                  {previewMedia && (
-                    <img
-                      src={`${previewMedia.fileId}`}
-                      alt={digitalProduct.name}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                  )}
-                  {!previewMedia && (
-                    <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
-                      <PhotoSolid className="w-8 h-8 text-gray-400" />
-                    </div>
-                  )}
+                  <div className="flex gap-2">
+                    {previewMedias.length > 0 ? (
+                      previewMedias.map((media, index) => (
+                        <img
+                          key={media.id || index}
+                          src={media.url || `/files/${media.fileId}`}
+                          alt={`${digitalProduct.name} preview ${index + 1}`}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                      ))
+                    ) : (
+                      <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
+                        <PhotoSolid className="w-8 h-8 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
                 </Table.Cell>
                 <Table.Cell>
                   {digitalProduct.name}

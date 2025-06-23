@@ -21,13 +21,16 @@ const createDigitalProductMediasStep = createStep(
     const digitalProductModuleService: DigitalProductModuleService =
       container.resolve(DIGITAL_PRODUCT_MODULE)
 
-    console.log('Creating digital product medias:', JSON.stringify(medias, null, 2))
+    console.log(
+      'Creating digital product medias:',
+      JSON.stringify(medias, null, 2)
+    )
     console.log('Number of medias to create:', medias.length)
 
     // Deduplicate medias by fileId and type before creating
     const uniqueMedias = medias.reduce((acc, media) => {
       const key = `${media.fileId}-${media.type}`
-      if (!acc.some(m => `${m.fileId}-${m.type}` === key)) {
+      if (!acc.some((m) => `${m.fileId}-${m.type}` === key)) {
         acc.push(media)
       }
       return acc
@@ -36,30 +39,35 @@ const createDigitalProductMediasStep = createStep(
     console.log('Unique medias after deduplication:', uniqueMedias.length)
 
     // Check for existing media records to avoid duplicate key errors
-    const existingMedias = await digitalProductModuleService.listDigitalProductMedias({
-      digital_product_id: uniqueMedias[0]?.digital_product_id,
-    })
+    const existingMedias =
+      await digitalProductModuleService.listDigitalProductMedias({
+        digital_product_id: uniqueMedias[0]?.digital_product_id
+      })
 
     const existingKeys = new Set(
-      existingMedias.map(m => `${m.fileId}-${m.type}`)
+      existingMedias.map((m) => `${m.fileId}-${m.type}`)
     )
 
     const newMedias = uniqueMedias.filter(
-      media => !existingKeys.has(`${media.fileId}-${media.type}`)
+      (media) => !existingKeys.has(`${media.fileId}-${media.type}`)
     )
 
-    console.log(`Found ${existingMedias.length} existing medias, creating ${newMedias.length} new medias`)
+    console.log(
+      `Found ${existingMedias.length} existing medias, creating ${newMedias.length} new medias`
+    )
 
-    let digitalProductMedias = []
-    
+    let digitalProductMedias: any = []
+
     if (newMedias.length > 0) {
-      digitalProductMedias = await digitalProductModuleService.createDigitalProductMedias(newMedias)
+      digitalProductMedias =
+        await digitalProductModuleService.createDigitalProductMedias(newMedias)
     }
 
     // Return all medias (existing + new)
-    const allMedias = await digitalProductModuleService.listDigitalProductMedias({
-      digital_product_id: uniqueMedias[0]?.digital_product_id,
-    })
+    const allMedias =
+      await digitalProductModuleService.listDigitalProductMedias({
+        digital_product_id: uniqueMedias[0]?.digital_product_id
+      })
 
     console.log('Total digital product medias:', allMedias.length)
 
